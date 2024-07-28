@@ -24,7 +24,8 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(
-            create: (BuildContext context) => QrUpdateCutOutSizeCubit()),
+          create: (BuildContext context) => QrUpdateCutOutSizeCubit(),
+        ),
         BlocProvider(create: (BuildContext context) => TorchCubit()),
         BlocProvider(create: (BuildContext context) => HiveQrScannedBloc()),
         BlocProvider(create: (BuildContext context) => HiveQrCreatedBloc()),

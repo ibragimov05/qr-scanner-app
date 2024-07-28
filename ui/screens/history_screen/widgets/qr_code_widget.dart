@@ -9,9 +9,17 @@ import 'package:qr_code_app/core/utils/app_text_styles.dart';
 import 'package:qr_code_app/data/models/qr.dart';
 import 'package:qr_code_app/logic/bloc/hive_qr_scanned/hive_qr_scanned_bloc.dart';
 
+import '../../../../logic/bloc/hive_qr_created/hive_qr_created_bloc.dart';
+
 class QrCodeWidget extends StatelessWidget {
   final Qr qr;
-  const QrCodeWidget({super.key, required this.qr});
+  final bool isScanned;
+
+  const QrCodeWidget({
+    super.key,
+    required this.qr,
+    required this.isScanned,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +60,15 @@ class QrCodeWidget extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    context.read<HiveQrScannedBloc>().add(
-                          DeleteScannedQrCodeEvent(id: qr.id),
-                        );
+                    if (isScanned) {
+                      context.read<HiveQrScannedBloc>().add(
+                            DeleteScannedQrCodeEvent(id: qr.id),
+                          );
+                    } else {
+                      context.read<HiveQrCreatedBloc>().add(
+                            DeleteCreatedQrCodeEvent(id: qr.id),
+                          );
+                    }
                   },
                   icon: const Icon(
                     Icons.delete,

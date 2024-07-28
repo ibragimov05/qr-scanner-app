@@ -66,7 +66,9 @@ class _HistortScreenState extends State<HistoryScreen> {
               bloc: context.read<HiveQrScannedBloc>()
                 ..add(GetScannedQrCodesEvent()),
               buildWhen: (previous, current) =>
-                  current != previous && current is LoadedHiveScannedQrState,
+                  current != previous &&
+                  (current is LoadedHiveScannedQrState ||
+                      current is ErrorHiveScannedQrState),
               builder: (context, state) {
                 if (state is LoadingHiveScannedQrState) {
                   return const Center(
@@ -76,8 +78,10 @@ class _HistortScreenState extends State<HistoryScreen> {
                   return state.qrCodes.isNotEmpty
                       ? ListView.builder(
                           itemCount: state.qrCodes.length,
-                          itemBuilder: (context, index) =>
-                              QrCodeWidget(qr: state.qrCodes[index]),
+                          itemBuilder: (context, index) => QrCodeWidget(
+                            qr: state.qrCodes[index],
+                            isScanned: true,
+                          ),
                         )
                       : const ListIsEmtyText(historyName: 'scanned');
                 } else if (state is ErrorHiveScannedQrState) {
@@ -88,13 +92,14 @@ class _HistortScreenState extends State<HistoryScreen> {
                 return const SizedBox.shrink();
               },
             ),
-
             //! created qr codes bloc
             BlocBuilder<HiveQrCreatedBloc, HiveCreatedQrStates>(
               bloc: context.read<HiveQrCreatedBloc>()
                 ..add(GetCreatedQrCodesEvent()),
               buildWhen: (previous, current) =>
-                  current != previous && current is LoadedHiveScannedQrState,
+                  current != previous &&
+                  (current is LoadedHiveCreatedQrState ||
+                      current is ErrorHiveCreatedQrState),
               builder: (context, state) {
                 if (state is LoadingHiveCreatedQrState) {
                   return const Center(
@@ -105,7 +110,10 @@ class _HistortScreenState extends State<HistoryScreen> {
                       ? ListView.builder(
                           itemCount: state.qrCodes.length,
                           itemBuilder: (context, index) {
-                            return QrCodeWidget(qr: state.qrCodes[index]);
+                            return QrCodeWidget(
+                              qr: state.qrCodes[index],
+                              isScanned: false,
+                            );
                           },
                         )
                       : const ListIsEmtyText(historyName: 'created');
