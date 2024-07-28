@@ -80,27 +80,24 @@ class _ShowQrDialogState extends State<ShowQrDialog> {
               AppColors.ffFDB623.withOpacity(0.1),
             ),
           ),
-          onPressed: () {
-            _saveQrCode
-                .generateAndSaveQRCode(
+          onPressed: () async {
+            bool isSucces = await _saveQrCode.generateAndSaveQRCode(
               screenshotController: _screenshotController,
               data: widget.userInput,
-              context: context,
-            )
-                .then(
-              (value) {
-                if (value) {
-                  AppFunctions.showSnackBar(
-                    'QR Code saved to gallery',
-                    context,
-                  );
-                }
-              },
             );
-            context.read<HiveQrCreatedBloc>().add(
-                  AddCreatedQrCodeEvent(data: widget.userInput),
-                );
-            Navigator.pop(context);
+            if (context.mounted) {
+              if (isSucces) {
+                context.read<HiveQrCreatedBloc>().add(
+                      AddCreatedQrCodeEvent(data: widget.userInput),
+                    );
+                Navigator.pop(context);
+                AppFunctions.showSnackBar('QR Code saved to gallery', context);
+              } else {
+                Navigator.pop(context);
+                AppFunctions.showSnackBar(
+                    'Something went wrong! Try again, please.', context);
+              }
+            }
           },
           child: Text(
             'Save to gallery',

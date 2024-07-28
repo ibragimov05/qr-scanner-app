@@ -9,6 +9,7 @@ import 'package:qr_code_app/ui/widgets/share_qr_code_button.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../../core/utils/app_functions.dart';
 import '../../../logic/services/dependency_injection.dart';
 import '../../../logic/services/qr_code_services.dart';
 
@@ -76,11 +77,25 @@ class _ShowQrScreenState extends State<ShowQrScreen> {
                   HelperButton(
                     icon: Icons.save,
                     buttonText: 'Save',
-                    onTap: () => _qrCodeServices.generateAndSaveQRCode(
-                      screenshotController: _screenshotController,
-                      data: widget._data,
-                      context: context,
-                    ),
+                    onTap: () async {
+                      final bool isSucces =
+                          await _qrCodeServices.generateAndSaveQRCode(
+                        screenshotController: _screenshotController,
+                        data: widget._data,
+                      );  
+                      if (context.mounted) {
+                        if (isSucces) {
+                          Navigator.pop(context);
+                          AppFunctions.showSnackBar(
+                              'QR Code saved to gallery', context);
+                        } else {
+                          Navigator.pop(context);
+                          AppFunctions.showSnackBar(
+                              'Something went wrong! Try again, please.',
+                              context);
+                        }
+                      }
+                    },
                   ),
                 ],
               ),

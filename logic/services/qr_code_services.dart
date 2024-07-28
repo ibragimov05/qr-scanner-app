@@ -12,7 +12,6 @@ class QrCodeServices {
   Future<bool> generateAndSaveQRCode({
     required ScreenshotController screenshotController,
     required String data,
-    required BuildContext context,
   }) async {
     try {
       if (await Permission.storage.request().isGranted) {
@@ -27,21 +26,12 @@ class QrCodeServices {
           await ImageGallerySaver.saveImage(await xFile.readAsBytes());
           return true;
         } else {
-          if (context.mounted) {
-            AppFunctions.showSnackBar('Unable to save image', context);
-          }
           return false;
         }
       } else {
-        if (context.mounted) {
-          AppFunctions.showSnackBar('Storage permission not granted', context);
-        }
         return false;
       }
     } catch (e) {
-      if (context.mounted) {
-        AppFunctions.showSnackBar('error: $e', context);
-      }
       return false;
     }
   }

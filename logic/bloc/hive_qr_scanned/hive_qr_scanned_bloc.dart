@@ -72,7 +72,7 @@ class HiveQrScannedBloc extends Bloc<HiveQrScannedEvents, HiveScannedQrStates> {
           _historyQR.put(HiveConst.scannedQR, _toMap(qrCodes));
           emit(LoadedHiveScannedQrState(qrCodes: qrCodes));
         } else {
-          emit(ErrorHiveScannedQrState(errorMessage: 'QR code not found.'));
+          emit(LoadedHiveScannedQrState(qrCodes: qrCodes));
         }
       } else {
         emit(ErrorHiveScannedQrState(errorMessage: 'No data found.'));
